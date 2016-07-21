@@ -158,11 +158,13 @@ void worker(int sock, char * path)
 	             if(buffer[0] == 'q')
 				exit(0);	
 			      
-			if(strstr(resp, "text/html"))
+			if(strstr(buffer, "text/html"))
 				flag = 1;
+			if(strstr(buffer, "GET") == NULL)
+				flag = 0;
 			pt1 = memchr(buffer, '/', BUF_SIZE);
 			if(pt1 != NULL && flag == 1){
-				pt2 = strcspn(pt1, ' ?=');
+				pt2 = strcspn(pt1, ' ?');
 
 				if(pt2 != NULL){
 					char full_path[96] = {0};
