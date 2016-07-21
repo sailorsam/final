@@ -173,7 +173,7 @@ void worker(int sock, char * path)
 					fp = fopen(full_path,"r");
 					if(fp != NULL){
 						len = fread(buf, 1, sizeof(buf), fp);
-						sprintf(resp, "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-type: text/html\nContent-Length:%d\n\n%s", ctime(&rtime),len,buf);
+						sprintf(resp, "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-Type: text/html\nContent-Length:%d\n\n%s", ctime(&rtime),len,buf);
 						fclose(fp);
 					}//fp
 				}//pt2
