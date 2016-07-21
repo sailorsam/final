@@ -146,7 +146,7 @@ void worker(int sock, char * path)
                 else if (res > 0) {
 			FILE *fp;
 			unsigned char flag = 0;
-			char * pt1, *pt2, *pt3;
+			char * pt1, *pt2, *pt3, *pt4;
 			char resp[4096]= {0};
 			char url[64] = {0};
 			time_t rtime;
@@ -161,12 +161,8 @@ void worker(int sock, char * path)
 				flag = 1;
 			pt1 = memchr(buffer, '/', BUF_SIZE);
 			if(pt1 != NULL && flag == 1){
-				pt2 = memchr(pt1, ' ', BUF_SIZE -  (pt1 - buffer));
-				pt3 = memchr(pt1, '?', BUF_SIZE -  (pt1 - buffer));
-				if(pt2!=NULL && pt3!=NULL){
-					if(pt2 > pt3) pt2 = pt3;
-				}
-				if (pt2==NULL) pt2 =pt3;
+				pt2 = strcspn(pt1, ' ?=');
+
 				if(pt2 != NULL){
 					char full_path[96] = {0};
 					char buf[2048] = {0}; 
