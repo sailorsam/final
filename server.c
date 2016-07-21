@@ -166,6 +166,7 @@ void worker(int sock, char * path)
 				if(pt2!=NULL && pt3!=NULL){
 					if(pt2 > pt3) pt2 = pt3;
 				}
+				if (pt2==NULL) pt2 =pt3;
 				if(pt2 != NULL){
 					char full_path[96] = {0};
 					char buf[2048] = {0}; 
