@@ -151,7 +151,7 @@ void worker(int sock, char * path)
 			char url[64] = {0};
 			time_t rtime;
 			//char h_error[] = "HTTP/1.0 404 Not found\nContent-Type: text/html\nContent-Length:72\n\n<html><header>Not found!</header><body><h1>Not found!</h1></body></html>";
-			char h_error[] = "HTTP/1.0 404 Not Found\nContent-Type: text/html\nContent-Length:0\n\n
+			char h_error[] = "HTTP/1.0 404 Not Found\nContent-Type: text/html\nContent-Length:0\n\n";
 			char header[] = "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-type: text/html\nContent-Length:";	//"\n\n"	
 			memcpy(resp,h_error,sizeof(h_error));
 			time(&rtime);
