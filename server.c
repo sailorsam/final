@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <stdio.h>
+#include <time.h>
 
 
 #define MAX_EVENTS 256
@@ -148,10 +149,11 @@ void worker(int sock, char * path)
 			char * pt1, *pt2;
 			char resp[4096]= {0};
 			char url[64] = {0};
+			time_t rtime;
 			char h_error[] = "HTTP/1.0 404 Not found\nContent-type: text/html\nContent-Length:72\n\n<html><header>Not found!</header><body><h1>Not found!</h1></body></html>";
-			char header[] = "HTTP/1.0 200 OK\nDate: Fri, 21 JUL 2016 00:30:34 GMT\nServer: Test\nLast-modified: Fri, 21 JUL 2016 00:10:34 GMT\nContent-type: text/html\nContent-Length:";	//"\n\n"	
+			char header[] = "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-type: text/html\nContent-Length:";	//"\n\n"	
 			memcpy(resp,h_error,sizeof(h_error));
-	
+			time(&rtime);
 	             if(buffer[0] == 'q')
 				exit(0);	
 			      
@@ -171,7 +173,7 @@ void worker(int sock, char * path)
 					fp = fopen(full_path,"r");
 					if(fp != NULL){
 						len = fread(buf, 1, sizeof(buf), fp);
-						sprintf(resp, "%s%d\n\n%s", header,len,buf);
+						sprintf(resp, "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-type: text/html\nContent-Length:%d\n\n%s", ctime(&rtime),len,buf);
 						fclose(fp);
 					}//fp
 				}//pt2
