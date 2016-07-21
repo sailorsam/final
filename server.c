@@ -151,7 +151,7 @@ void worker(int sock, char * path)
 			char url[64] = {0};
 			time_t rtime;
 			//char h_error[] = "HTTP/1.0 404 Not found\nContent-Type: text/html\nContent-Length:72\n\n<html><header>Not found!</header><body><h1>Not found!</h1></body></html>";
-			char h_error[] = "HTTP/1.0 404 Not Found\nContent-Type: text/html\nContent-Length:0\n\n";
+			char h_error[] = "HTTP/1.0 404 Not Found\r\nContent-Type: text/html\r\nContent-Length:0\r\n\r\n";
 			char header[] = "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-type: text/html\nContent-Length:";	//"\n\n"	
 			memcpy(resp,h_error,sizeof(h_error));
 			time(&rtime);
@@ -160,8 +160,8 @@ void worker(int sock, char * path)
 			      
 			/*if(strstr(buffer, "text/html"))
 				flag = 1;*/
-			if(strstr(buffer, "GET") )
-				flag = 1;
+			if(strstr(buffer, "GET") == NULL)
+				flag = 0;
 			pt1 = memchr(buffer, '/', BUF_SIZE);
 			if(pt1 != NULL && flag == 1){
 				pt2 = strcspn(pt1, ' ?');
@@ -177,7 +177,7 @@ void worker(int sock, char * path)
 					fp = fopen(full_path,"r");
 					if(fp != NULL){
 						len = fread(buf, 1, sizeof(buf), fp);
-						sprintf(resp, "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-Type: text/html\nContent-Length:%d\n\n%s", ctime(&rtime),len,buf);
+						sprintf(resp, "HTTP/1.0 200 OK\r\nDate: %s\r\nContent-Type: text/html\r\nContent-Length:%d\r\n\r\n%s", ctime(&rtime),len,buf);
 						fclose(fp);
 					}//fp
 				}//pt2
