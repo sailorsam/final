@@ -158,10 +158,10 @@ void worker(int sock, char * path)
 	             if(buffer[0] == 'q')
 				exit(0);	
 			      
-			if(strstr(buffer, "text/html"))
+			/*if(strstr(buffer, "text/html"))
+				flag = 1;*/
+			if(strstr(buffer, "GET") )
 				flag = 1;
-			if(strstr(buffer, "GET") == NULL)
-				flag = 0;
 			pt1 = memchr(buffer, '/', BUF_SIZE);
 			if(pt1 != NULL && flag == 1){
 				pt2 = strcspn(pt1, ' ?');
