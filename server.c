@@ -176,7 +176,7 @@ void worker(int sock, char * path)
 
 			pt1 = memchr(buffer, '/', BUF_SIZE);
 			if(pt1 != NULL && flag == 1){
-				pt2 = pt1 + strcspn(pt1, ' ?');
+				pt2 = pt1 + strcspn(pt1, " ?");
 
 				if(1){
 					char full_path[96] = {0};
@@ -190,7 +190,7 @@ void worker(int sock, char * path)
 					if(fp != NULL){
 						len = fread(buf, 1, sizeof(buf), fp);
 						if(version)
-							sprintf(resp, "HTTP/1.0 200 OK\r\nDate: %s\r\nContent-Type: text/html\r\nContent-Length:%d\r\n\r\n%s", ctime(&rtime),len,buf);
+							sprintf(resp, "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nContent-Length:%d\r\n\r\n%s", /*ctime(&rtime),*/len,buf);
 						else 	sprintf(resp, "HTTP/0.9 200 OK\r\nContent-Length:%d\r\n\r\n%s",len,buf);
 						fclose(fp);
 					}//fp
