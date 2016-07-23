@@ -145,28 +145,40 @@ void worker(int sock, char * path)
                 }
                 else if (res > 0) {
 			FILE *fp;
-			unsigned char flag = 0;
+			unsigned char flag = 0, version = 1;
 			char * pt1, *pt2, *pt3, *pt4;
 			char resp[4096]= {0};
 			char url[64] = {0};
 			time_t rtime;
-			//char h_error[] = "HTTP/1.0 404 Not found\nContent-Type: text/html\nContent-Length:72\n\n<html><header>Not found!</header><body><h1>Not found!</h1></body></html>";
-			char h_error[] = "HTTP/1.0 404 Not Found\r\nContent-Type: text/html\r\nContent-Length:0\r\n\r\n";
-			char header[] = "HTTP/1.0 200 OK\nDate: %s\nServer: Test\nContent-type: text/html\nContent-Length:";	//"\n\n"	
-			memcpy(resp,h_error,sizeof(h_error));
+			char h_error_v1[] = "HTTP/1.0 404 Not found\r\nContent-Type: text/html\r\nContent-Length:0\r\n\r\n";//<html><header>Not found!</header><body><h1>Not found!</h1></body></html>";
+			char h_error_v0[] = "HTTP/0.9 404 Not Found\r\n\r\n";
+			//char header[] = "HTTP/%d.%d 200 OK\nDate: %s\nServer: Test\nContent-type: text/html\nContent-Length:";	//"\n\n"	
+			memcpy(resp,h_error_v1,sizeof(h_error_v1));
 			time(&rtime);
 	             if(buffer[0] == 'q')
 				exit(0);	
 			      
 			/*if(strstr(buffer, "text/html"))
 				flag = 1;*/
+			
+			pt3 = strstr(buffer, "HTTP/");
+			if(pt3 == NULL)
+				flag = 0;
+			if(*(pt3 + 5) == '0')
+				version = 0;
+			if(version)
+				sprintf(resp, "%s",h_error_v1);
+			else
+				sprintf(resp, "%s",h_error_v0);
+
 			if(strstr(buffer, "GET") == NULL)
 				flag = 0;
+
 			pt1 = memchr(buffer, '/', BUF_SIZE);
 			if(pt1 != NULL && flag == 1){
-				pt2 = strcspn(pt1, ' ?');
+				pt2 = pt1 + strcspn(pt1, ' ?');
 
-				if(pt2 != NULL){
+				if(1){
 					char full_path[96] = {0};
 					char buf[2048] = {0}; 
 					int len = 0;
@@ -177,7 +189,9 @@ void worker(int sock, char * path)
 					fp = fopen(full_path,"r");
 					if(fp != NULL){
 						len = fread(buf, 1, sizeof(buf), fp);
-						sprintf(resp, "HTTP/1.0 200 OK\r\nDate: %s\r\nContent-Type: text/html\r\nContent-Length:%d\r\n\r\n%s", ctime(&rtime),len,buf);
+						if(version)
+							sprintf(resp, "HTTP/1.0 200 OK\r\nDate: %s\r\nContent-Type: text/html\r\nContent-Length:%d\r\n\r\n%s", ctime(&rtime),len,buf);
+						else 	sprintf(resp, "HTTP/0.9 200 OK\r\nContent-Length:%d\r\n\r\n%s",len,buf);
 						fclose(fp);
 					}//fp
 				}//pt2
@@ -196,7 +210,7 @@ void worker(int sock, char * path)
 
 int main(int argc, char **argv)
 {
-char path[64] = ".";
+char path[64] = "/home/box/final";
 char  ip[16] = "127.0.0.1";
 int port = 12345;
 int opt;
